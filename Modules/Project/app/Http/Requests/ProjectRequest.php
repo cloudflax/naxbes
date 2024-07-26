@@ -31,7 +31,7 @@ class ProjectRequest extends FormRequest
      */
     public function rules(): array
     {
-        # Determine the action based on the HTTP method and request URI
+        // Determine the action based on the HTTP method and request URI
         $rules = [
             'name'        => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -39,23 +39,23 @@ class ProjectRequest extends FormRequest
         ];
 
         if ($this->isMethod('post')) {
-            # Validation rules for storing a new project
+            // Validation rules for storing a new project
             return $rules;
         }
 
         if ($this->isMethod('put') || $this->isMethod('patch')) {
-            # Validation rules for updating an existing project
+            // Validation rules for updating an existing project
             return array_merge($rules, [
-                # Additional rules for update if necessary
+                // Additional rules for update if necessary
             ]);
         }
 
         if ($this->isMethod('delete')) {
-            # Validation rules for deleting a project (usually not needed)
+            // Validation rules for deleting a project (usually not needed)
             return [];
         }
 
-        # Default return if method does not match known methods
+        // Default return if method does not match known methods
         return [];
     }
 }

@@ -16,7 +16,7 @@ use Illuminate\Foundation\Http\FormRequest;
 abstract class Request extends FormRequest
 {
     /**
-     * Authorizes the request. 
+     * Authorizes the request.
      *
      * By default, always authorizes the request. Child classes may
      * override this method if authorization logic is needed.
@@ -29,14 +29,24 @@ abstract class Request extends FormRequest
     }
 
     /**
-     * Defines allowed fields for filters.
+     * Defines allowed fields for filters and sorting.
      *
      * Child classes must implement this method to specify which fields
-     * can be used in the request filters.
+     * can be used in the request filters and sorting.
      *
-     * @return array An array of allowed field names for filters.
+     * @return array An array of allowed field names for filters and sorting.
      */
     abstract public function allowedFields();
+
+    /**
+     * Defines allowed sort directions with default values.
+     *
+     * @return array An array of allowed sort directions.
+     */
+    protected function allowedSortDirections()
+    {
+        return ['asc', 'desc']; // Default sort directions
+    }
 
     /**
      * Defines allowed operators for filters by field.
@@ -66,6 +76,33 @@ abstract class Request extends FormRequest
     }
 
     /**
+     * Defines custom error messages for validation.
+     *
+     * This method provides custom error messages for the validation rules
+     * defined in the `rules` method. Child classes can override this method
+     * to provide specific error messages for their validation rules.
+     *
+     * @return array An array of custom error messages.
+     */
+    public function messages()
+    {
+        $config = $this->fieldRules();
+        $messages = [
+            'filters.required' => 'Filters are required.',
+            'filters.array' => 'Filters must be an array.',
+            'sort.string' => 'Sort parameters must be a string.',
+        ];
+
+        foreach ($config as $field => $fieldConfig) {
+            foreach ($fieldConfig['search_operators'] as $operator => $operatorRule) {
+                $messages["filters.$field.$operator"] = "The $operator filter for $field is invalid.";
+            }
+        }
+
+        return $messages;
+    }
+
+    /**
      * Defines the validation rules for the request.
      *
      * This method dynamically builds the validation rules for filters based on
@@ -76,7 +113,58 @@ abstract class Request extends FormRequest
     public function rules()
     {
         $config = $this->fieldRules();
-        $rules = ['filters' => 'sometimes|array'];
+        $allowedFields = $this->allowedFields();
+        $allowedSortDirections = $this->allowedSortDirections();
+
+        $rules = [
+            'filters' => 'sometimes|array',
+            'filters.*' => ['array', function ($attribute, $value, $fail) use ($config, $allowedFields) {
+                $field = $this->extractFieldFromAttribute($attribute);
+
+                if (!in_array($field, $allowedFields)) {
+                    $fail("The field '$field' is not allowed.");
+                    return;
+                }
+
+                if (!isset($config[$field])) {
+                    $fail("No configuration found for the field '$field'.");
+                    return;
+                }
+
+                $allowedOperators = array_keys($config[$field]['search_operators']);
+                foreach ($value as $operator => $val) {
+                    if (!in_array($operator, $allowedOperators)) {
+                        $fail("The operator '$operator' is not allowed for field '$field'.");
+                    }
+                }
+            }],
+            'sort' => [
+                'sometimes',
+                'string',
+                function ($attribute, $value, $fail) use ($allowedFields, $allowedSortDirections) {
+                    $sortParameters = explode(',', $value);
+
+                    foreach ($sortParameters as $sortParam) {
+                        $parts = explode(':', $sortParam, 2);
+                        if (count($parts) !== 2) {
+                            $fail("The sort format for '$attribute' is invalid. It should be 'field:direction'.");
+                            return;
+                        }
+
+                        list($field, $direction) = $parts;
+
+                        if (!in_array($field, $allowedFields)) {
+                            $fail("The sort field '$field' is not allowed.");
+                            return;
+                        }
+
+                        if (!in_array($direction, $allowedSortDirections)) {
+                            $fail("The sort direction '$direction' is not allowed for field '$field'.");
+                        }
+                    }
+                }
+            ],
+        ];
 
         foreach ($config as $field => $fieldConfig) {
             $rules["filters.$field"] = $fieldConfig['rules'];
@@ -87,10 +175,10 @@ abstract class Request extends FormRequest
         }
 
         // Validate that only allowed operators are used for each field
-        $rules['filters.*'] = ['array', function ($attribute, $value, $fail) use ($config) {
+        $rules['filters.*'] = ['array', function ($attribute, $value, $fail) use ($config, $allowedFields) {
             $field = $this->extractFieldFromAttribute($attribute);
 
-            if (!in_array($field, $this->allowedFields())) {
+            if (!in_array($field, $allowedFields)) {
                 $fail("The field '$field' is not allowed.");
                 return;
             }
@@ -109,31 +197,5 @@ abstract class Request extends FormRequest
         }];
 
         return $rules;
-    }
-
-    /**
-     * Defines custom error messages for validation.
-     *
-     * This method provides custom error messages for the validation rules
-     * defined in the `rules` method. Child classes can override this method
-     * to provide specific error messages for their validation rules.
-     *
-     * @return array An array of custom error messages.
-     */
-    public function messages()
-    {
-        $config = $this->fieldRules();
-        $messages = [
-            'filters.required' => 'Filters are required.',
-            'filters.array' => 'Filters must be an array.',
-        ];
-
-        foreach ($config as $field => $fieldConfig) {
-            foreach ($fieldConfig['search_operators'] as $operator => $operatorRule) {
-                $messages["filters.$field.$operator"] = "The $operator filter for $field is invalid.";
-            }
-        }
-
-        return $messages;
     }
 }
