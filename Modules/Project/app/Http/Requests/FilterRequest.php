@@ -2,8 +2,8 @@
 
 namespace Modules\Project\Http\Requests;
 
-use App\Http\Requests\Rule;
-use App\Http\Requests\Request;
+use Cloudflax\Request\Rule;
+use Cloudflax\Request\Request;
 
 class FilterRequest extends Request
 {

@@ -11,6 +11,13 @@ use Modules\Project\Http\Requests\ProjectRequest;
 use Modules\Project\Transformers\ProjectResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
+/**
+ * Class ProjectController
+ *
+ * This controller handles CRUD operations for Project resources.
+ *
+ * @package Modules\Project\Http\Controllers
+ */
 class ProjectController extends Controller
 {
     /**
