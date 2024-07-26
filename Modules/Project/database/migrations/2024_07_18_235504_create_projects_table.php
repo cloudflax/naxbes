@@ -28,7 +28,9 @@ return new class extends Migration
             $table->string('name');
 
             # Detailed description of the project, can be null
-            $table->text('description')->nullable();
+            $table->text('description')->default('')->nullable();
+
+            $table->foreignId('owner_id')->constrained('users');
 
             # Status of the project with a default value of 'active'
             $table->enum('status', ['active', 'inactive'])->default('active');

@@ -2,9 +2,13 @@
 
 namespace Modules\Project\Models;
 
-use App\Models\Model;
+use App\Models\User;
+use Cloudflax\Model\Model;
 use Illuminate\Support\Carbon;
 use Modules\Project\Models\Interfaces\IProject;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Project\Database\Factories\ProjectFactory;
 
 /**
  * Class Project
@@ -24,8 +28,17 @@ class Project extends Model implements IProject
     protected $fillable = [
         'name',
         'description',
+        'owner_id',
         'status'
     ];
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): Factory
+    {
+        return ProjectFactory::new();
+    }
 
     /**
      * Get the unique identifier of the project.
@@ -55,6 +68,26 @@ class Project extends Model implements IProject
     public function getDescription(): string
     {
         return $this->getAttribute('description');
+    }
+
+    /**
+     * Get the identifier of the user who owns the project.
+     *
+     * @return int The unique identifier of the user who owns the project.
+     */
+    public function getOwnerId(): int
+    {
+        return $this->getAttribute('owner_id');
+    }
+
+    /**
+     * Get the relationship between the project and its owner.
+     *
+     * @return BelongsTo The Eloquent relationship representing the ownership of the project.
+     */
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_id');
     }
 
     /**

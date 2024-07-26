@@ -31,31 +31,19 @@ class ProjectRequest extends FormRequest
      */
     public function rules(): array
     {
-        // Determine the action based on the HTTP method and request URI
         $rules = [
             'name'        => 'required|string|max:255',
-            'description' => 'nullable|string',
             'status'      => 'required|string|in:active,inactive',
+            'owner_id'    => 'required|exists:users,id',
+            'description' => 'nullable|string',
         ];
 
         if ($this->isMethod('post')) {
-            // Validation rules for storing a new project
             return $rules;
         }
 
         if ($this->isMethod('put') || $this->isMethod('patch')) {
-            // Validation rules for updating an existing project
-            return array_merge($rules, [
-                // Additional rules for update if necessary
-            ]);
+            return array_merge($rules, []);
         }
-
-        if ($this->isMethod('delete')) {
-            // Validation rules for deleting a project (usually not needed)
-            return [];
-        }
-
-        // Default return if method does not match known methods
-        return [];
     }
 }

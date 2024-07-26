@@ -16,18 +16,20 @@
             <directory suffix="Test.php">./Modules/*/tests/Unit</directory>
         </testsuite>
     </testsuites>
-    <source>
+    
+    <coverage>
         <include>
             <directory suffix=".php">./app</directory>
             <directory suffix=".php">./Modules</directory>
         </include>
         <exclude>
-            <directory suffix=".php">./Modules/*/tests</directory>
             <directory suffix=".php">./Modules/*/database</directory>
             <directory suffix=".php">./Modules/*/resources</directory>
-            <directory suffix=".php">./Modules/*/app/Providers</directory>
+            <directory suffix=".php">./Modules/*/tests</directory>
+            <directory suffix=".php">./vendor</directory>
         </exclude>
-    </source>
+    </coverage>
+    
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
@@ -42,4 +44,3 @@
         <env name="TELESCOPE_ENABLED" value="false"/>
     </php>
 </phpunit>
- 

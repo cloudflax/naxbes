@@ -11,6 +11,13 @@ use Modules\Project\Http\Requests\ProjectRequest;
 use Modules\Project\Transformers\ProjectResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
+/**
+ * Class ProjectController
+ *
+ * This controller handles CRUD operations for Project resources.
+ *
+ * @package Modules\Project\Http\Controllers
+ */
 class ProjectController extends Controller
 {
     /**
@@ -58,10 +65,10 @@ class ProjectController extends Controller
      *
      * This method retrieves a project by its ID and returns it in a JSON response.
      * 
-     * @param int $id The ID of the project to retrieve.
+     * @param string $id The ID of the project to retrieve.
      * @return JsonResponse A JSON response containing the project if found, or an error message with a 404 Not Found status code if not found.
      */
-    public function show(int $id): JsonResponse
+    public function show(string $id): JsonResponse
     {
         $project = Project::find($id);
 
@@ -78,10 +85,10 @@ class ProjectController extends Controller
      * This method validates the request data and updates the project record with the specified ID.
      * 
      * @param ProjectRequest $request The request instance containing the data to update the project.
-     * @param int $id The ID of the project to update.
+     * @param string $id The ID of the project to update.
      * @return JsonResponse A JSON response with the updated project and a 200 OK status code, or an error message with a 404 Not Found status code if the project is not found.
      */
-    public function update(ProjectRequest $request, int $id): JsonResponse
+    public function update(ProjectRequest $request, string $id): JsonResponse
     {
         $project = Project::find($id);
 
@@ -99,10 +106,10 @@ class ProjectController extends Controller
      *
      * This method deletes the project record with the specified ID from the database.
      * 
-     * @param int $id The ID of the project to delete.
+     * @param string $id The ID of the project to delete.
      * @return JsonResponse A JSON response with a success message and a 204 No Content status code, or an error message with a 404 Not Found status code if the project is not found.
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(string $id): JsonResponse
     {
         $project = Project::find($id);
 
