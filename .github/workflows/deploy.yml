@@ -9,6 +9,7 @@ jobs:
   checkout:
     name: Build & Deploy
     runs-on: ubuntu-24.04
+    environment: Digital Ocean
     steps:
       - name: Checkout repository
         uses: actions/checkout@master
@@ -16,7 +17,5 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
-      - name: Print version php
-        run: php -v
-      - name: Print version composer
-        run: composer --version
+      - name: Show environment
+        run: echo "The secret is ${{ secrets.DO_SSH_USER }}"
