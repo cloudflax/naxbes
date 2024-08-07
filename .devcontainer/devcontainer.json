@@ -9,8 +9,10 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				// "mikestead.dotenv",
-				// "amiralizadeh9480.laravel-extra-intellisense",
+				"mikestead.dotenv",
+				"amiralizadeh9480.laravel-extra-intellisense",
+				"bmewburn.vscode-intelephense-client",
+				"eamodio.gitlens"
 				// "ryannaddy.laravel-artisan",
 				// "onecentlin.laravel5-snippets",
 				// "onecentlin.laravel-blade"
