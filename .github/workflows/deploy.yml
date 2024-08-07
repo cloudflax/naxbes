@@ -1,0 +1,22 @@
+name: Deploy - Cloudflax
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  checkout:
+    name: Build & Deploy
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@master
+      - name: Setup php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+      - name: Print version php
+        run: php -v
+      - name: Print version composer
+        run: composer --version
