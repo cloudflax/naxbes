@@ -24,7 +24,6 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.DO_SSH_KEY }}
-          ssh-passphrase: ${{ secrets.SSH_PASSPHRASE }}
 
       - name: Upload files to DigitalOcean Droplet
         run: |
