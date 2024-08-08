@@ -20,14 +20,6 @@ jobs:
         with:
           php-version: '8.3'
 
-      - name: Set up SSH key
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.DO_SSH_KEY }}
-
-      - name: Install composer packages
-        run: composer install --no-dev
-      
       - name: Deploy to server
         uses: charliex2/laravel-action@master
         with:
