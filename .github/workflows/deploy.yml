@@ -27,6 +27,6 @@ jobs:
 
       - name: Upload files to DigitalOcean Droplet
         run: |
-          rsync -avz --delete ./ ${{ secrets.DO_SSH_USER }}@${{ secrets.DO_SSH_HOST }}:/var/www/html/laravel/
+          rsync -avz --delete ./ ${{ secrets.DO_SSH_USER }}@${{ secrets.DO_SSH_HOST }} : /var/www/html/laravel/
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
