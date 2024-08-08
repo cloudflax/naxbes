@@ -20,11 +20,13 @@ jobs:
         with:
           php-version: '8.3'
 
-      - name: Set up SSH key
-        uses: webfactory/ssh-agent@v0.5.3
+      - name: Deploy to Server
+        uses: ngocquyhoang/deploy@laravel
         with:
-          ssh-private-key: ${{ secrets.DO_SSH_KEY }}
-
-      - name: Upload files to DigitalOcean Droplet
-        run: |
-          rsync -avz --delete . ${{ secrets.DO_SSH_USER }}@${{ secrets.DO_SSH_HOST }}:/var/www/html/laravel/
+          user: ${{ secrets.DO_SSH_USER }}
+          host: ${{ secrets.DO_SSH_HOST }}
+          port: 22
+          path: /var/www/html/laravel
+          owner: root
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
